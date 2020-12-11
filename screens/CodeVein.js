@@ -16,6 +16,9 @@ import Banner from "../components/Banner";
 const CodeVein = ({ navigation }) => {
     const [userInfo, setUserInfo] = useState();
     const [title, setTitle] = useState("");
+    const [name, setName] = useState("");
+    const [game, setGame] = useState("");
+    const [review, setReview] = useState("");
     const [loading, setLoading] = useState();
 
     const getUserData = (uid) => {
@@ -45,6 +48,20 @@ const CodeVein = ({ navigation }) => {
         })
 
         navigation.navigate("Home");
+    }
+
+    const addReview = () => {
+      if (name === "") return;
+      if (review === "") return;
+  
+      firebase.firestore().collection("Users").doc(userInfo.uid).collection('Reviews').add({
+        name: name,
+        game: "Code Vein",
+        review: review,
+        id: userInfo.uid
+      })
+  
+      navigation.navigate("Home");
     }
 
     useEffect(() => {
@@ -94,6 +111,40 @@ const CodeVein = ({ navigation }) => {
                         }} color="red" title="Add to Cart">
                         <Text style={styles.buttonText}>Add to Cart</Text>
                     </Button>
+                </View>
+                <View style={styles.gameEntry}>
+
+                <KeyboardAvoidingView style={styles.keyboard} behavior="position" keyboardVerticalOffset={-90} enabled>
+                <View style={styles.textContainer}>
+                  <Text style={styles.heading}>Review Code Vein</Text>
+                  <Text style={styles.labelText}>Name:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="My Name"
+                    value={name}
+                    onChangeText={(text) => {
+                      setName(text);
+                    }}
+                    />
+                </View>
+
+                <View style={styles.textContainer}>
+                  <Text style={styles.labelText}>Enter Review:</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Review Code Vein"
+                    value={review}
+                    onChangeText={(text) => {
+                      setReview(text);
+                    }}
+                    />
+                </View>
+
+                <TouchableOpacity style={styles.button} onPress={addReview}>
+                  <Text style={styles.buttonText}>Submit Review</Text>
+                </TouchableOpacity>
+                </KeyboardAvoidingView>
+
                 </View>
             </ScrollView>
             
@@ -154,5 +205,36 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "black",
         textAlign: "left"
+    },
+    heading: {
+      color: "black",
+      fontSize: 24,
+      fontWeight: "bold",
+      textAlign: "center",
+      textDecorationStyle: "solid",
+      textDecorationLine: "underline",
+      paddingBottom: 5,
+    },
+    labelText: {
+      color: "red",
+      fontSize: 18,
+      paddingBottom: 10,
+    },
+    input: {
+      backgroundColor: "white",
+      padding: 20,
+      borderRadius: 40,
+      marginBottom: 10,
+    },
+    buttonText: {
+      color: "white",
+      backgroundColor: "red",
+      width: 150,
+      borderRadius: 10,
+      textAlign: "center",
+      fontSize: 20,
+      padding: 10,
+      marginLeft: 75,
+      marginTop: 10,
     }
 });
